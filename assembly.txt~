@@ -1,0 +1,268 @@
+/**************************************************************************
+ * ISA MINI PROJECT
+ * AUTHORS:Anuj Shukla(Y10UC065) & Harsh Khedar(Y10UC125)
+ * PROGRAM:Assembler
+ * *************************************************************************/
+
+/*Distribution of BitField of the 8 Bit:
+  *ADDRESSING MODE:1 BIT
+    Direct Addressing Mode:1
+      Indirect Addressing Mode:0
+  *OPCODE:3 BITS
+  *REGISTERS:2 BITS*/
+ 
+//HEADER FILES
+#include<stdio.h>
+#include<string.h>
+
+//MAIN FUNCTION
+void main()
+{
+    int i,count, sum, pow,num1,num2;    //DECLARATION OF VARIABLES AND POINTERS
+    char c, arr[8];
+    FILE *p,*q;
+   
+    p= fopen("isa.txt","r");        //FILE INITIALIZATION FOR READING OR WRITING
+    q= fopen("binary.txt","w");
+    i=0;
+    count = 0;
+
+    //CONVERSION OF ASSEMBLY LANGUAGE TO BINARY FORM
+    while((c=fgetc(p))!= EOF)
+    {
+        if(c!=' ' && c!='\n')
+        {
+            arr[i]=c;
+            i++;
+        }
+   
+        else if(c== ' ' || c=='\n')
+        {
+            arr[i]='\0';
+            i=0;
+        }
+                           
+        if(i==0)
+        {
+            if(count == 8)
+            {
+                fputc('\n',q);
+                count = 0;
+            }
+   
+                               
+            if(!(strcmp("R1", arr)))    //BITFIELD FOR R1
+            {
+                fputc('0', q);
+                         fputc('0', q);
+                count+=2;
+            }                       
+                       
+            else if(!(strcmp("R2", arr)))    //BITFIELD FOR R2
+            {
+                fputc('0', q);
+                fputc('1', q);
+                count+=2;
+            }
+                           
+            else if(!(strcmp("R3", arr)))    //BITFIELD FOR R3
+            {
+                fputc('1', q);
+                fputc('0', q);
+                count+=2;
+            }
+   
+            else if(!(strcmp("L1", arr)))    //BITFIELD FOR L1
+            {
+                fputc('1', q);
+                fputc('1', q);
+                count+=2;
+            }
+           
+            else if(!(strcmp("LOAD", arr)))        //BITFIELD FOR LOAD INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //LOAD OPCODE:000   
+                fputc('0', q);
+                fputc('0', q);
+                fputc('0', q);
+                count+=4;
+            }
+               
+            else if(!(strcmp("STORE", arr)))    //BITFIELD FOR STORE INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //STORE OPCODE:001   
+                fputc('0', q);
+                fputc('0', q);
+                fputc('1', q);
+                count+=4;
+            }
+           
+            else if(!(strcmp("ADD", arr)))        //BITFIELD FOR ADD INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //ADD OPCODE:010   
+                fputc('0', q);
+                fputc('1', q);
+                fputc('0', q);
+                count+=4;
+            }
+                           
+            else if(!(strcmp("SUB", arr)))        //BITFIELD FOR SUB INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //SUB OPCODE:011   
+                fputc('0', q);
+                fputc('1', q);
+                fputc('1', q);
+                count+=4;
+            }
+           
+            else if(!(strcmp("MULTI", arr)))    //BITFIELD FOR MULTI INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //MULTI OPCODE:100   
+                fputc('1', q);
+                fputc('0', q);
+                fputc('0', q);
+                count+=4;
+            }
+   
+            else if(!(strcmp("DIV", arr)))        //BITFIELD FOR DIV INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //DIV OPCODE:101   
+                fputc('1', q);
+                fputc('0', q);
+                fputc('1', q);
+                count+=4;
+            }
+           
+            else if(!(strcmp("MOV", arr)))        //BITFIELD FOR MOV INSTRUCTION
+            {                    //ADDRESSING BIT:0
+                fputc('0', q);            //MOV OPCODE:110   
+                fputc('1', q);
+                fputc('1', q);
+                fputc('0', q);
+                count+=4;
+            }
+
+            else if(!(strcmp("HALT", arr)))        //BITFIELD FOR HALT INSTRUCTION
+            {
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q);
+                fputc('1', q); 
+                count+=8;
+            }
+
+            else if(!(strcmp("PRINT", arr)))    //BITFIELD FOR PRINT INSTRUCTION
+            {                    //ADDRESSING BIT:1
+                fputc('1', q);           
+                fputc('1', q);
+                fputc('1', q);
+                fputc('0', q);               
+                fputc('0', q);
+                fputc('1', q);
+                count+=6;
+            }
+
+            else if(!(strcmp("JUMP", arr)))        //BITFIELD FOR JUMP INSTRUCTION
+            {                    //ADDRESSING BIT:1
+                fputc('1', q);           
+                fputc('1', q);
+                fputc('1', q);
+                fputc('0', q);               
+                fputc('0', q);
+                fputc('0', q);
+                count+=6;
+            }
+            }
+    }
+                                               
+    fclose(p);
+    fclose(q);
+                       
+
+    sum=0;
+    pow=128;
+   
+    p= fopen("binary.txt","r");
+    q= fopen("hexa.txt","w");
+
+    //CONVERSION TO HEXADECIMAL FROM BINARY   
+    while((c=fgetc(p))!= EOF)
+    {
+        if(c!= '\n')
+        {
+            sum= sum+(((int)c-48)*pow);
+            pow=pow/2;
+        }
+        else
+        {
+            fputc('0',q);
+            fputc('0',q);
+            fputc('0',q);
+            fputc('0',q);
+            fputc('x',q);
+            num1 = sum >> 4;
+            num2 = sum & 15;
+       
+            if(num1 == 10)
+            fputc('A',q);
+
+            else if(num1 == 11)
+            fputc('B',q);
+
+            else if(num1 == 12)
+            fputc('C',q);
+
+            else if(num1 == 13)
+            fputc('D',q);
+           
+            else if(num1 == 14)
+            fputc('E',q);
+
+            else if(num1 == 15)
+            fputc('F',q);
+
+            else
+            fputc(num1+48,q);
+                               
+            if(num2 == 10)
+            fputc('A',q);
+   
+            else if(num2 == 11)
+            fputc('B',q);
+           
+            else if(num2 == 12)
+            fputc('C',q);
+           
+            else if(num2 == 13)
+            fputc('D',q);
+
+            else if(num2 == 14)
+            fputc('E',q);
+           
+            else if(num2 == 15)
+            fputc('F',q);
+
+            else
+            fputc(num2+48,q);
+
+            fputc('\n',q);
+
+            sum=0;
+            pow=128;   
+            }
+        }
+
+        fclose(p);
+        fclose(q);
+                       
+        printf("\n\nTo obtain Binary Code & HexaDecimal Code for the given Source File,open binary.txt and hexa.txt in same source folder\n\n\n");           
+       
+}
+
+//END OF MAIN FUNTION
+ 
+//******************************************************************************************************************************************************************************************//
